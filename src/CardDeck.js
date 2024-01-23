@@ -48,8 +48,14 @@ function CardDeck () {
       `${GET_CARD_BASE_URL}${cardDeck.data.deck_id}/draw/?count=1`
     );
     const cardData = await response.json();
-    setCards(currCards => currCards.map(cardData.cards[0].image));
-    setCardDeck(currCardDeck => currCardDeck.data.remaining = cardData.remaining);
+    setCards(currCards => [...currCards, cardData.cards[0].image]);
+    setCardDeck(
+      currCardDeck => {
+        const updatedCardDeck= {...currCardDeck};
+        updatedCardDeck.data.remaining = cardData.remaining;
+        return updatedCardDeck;
+      }
+    );
   }
 
   if(cardDeck.isLoading) return <div>Loading...</div>;
@@ -59,7 +65,7 @@ function CardDeck () {
   return (
     <div>
       <button onClick={fetchCard}>Gimme A Card</button>
-      {cards.map(image => (<img src={image}></img>))}
+      {cards.map((image, idx) => (<img key={idx} src={image}></img>))}
     </div>
   )
 }
